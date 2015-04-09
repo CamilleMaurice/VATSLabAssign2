@@ -9,8 +9,13 @@
 #define BASICBLOB_H_INCLUDE
 
 // Additional includes
-//#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/legacy/blobtrack.hpp> //for CvBlob structure
+#include <opencv2/core/core.hpp>
+
+
+using namespace cv;
+using namespace std;
 
 /// Maximun number of char in the blob's format
 const int MAX_FORMAT = 1024;
@@ -32,7 +37,7 @@ private:
 	int FrameStart;
 	CvBlob blob;	
 	char format[MAX_FORMAT];	
-	IplImage *ObjectMask;
+	Mat ObjectMask;
 
 public:
 	// Default Constructor
@@ -93,9 +98,9 @@ public:
 	void writeInfo(FILE* fp);
 
 	//mev: Method to fill ObjectMask field with an already compute Mask
-	void setObjectMask(IplImage *Mask);
+	void setObjectMask(Mat Mask);
 	//mev: Method to get ObjectMask field from a Blob
-	IplImage *getObjectMask();
+	Mat getObjectMask();
 };
 
 #endif

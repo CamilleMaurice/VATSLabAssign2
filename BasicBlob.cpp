@@ -1,6 +1,7 @@
 //Additional includes
 #include "BasicBlob.h"
-
+using namespace cv;
+using namespace std;
 /**
  *	Standard class Constructor. 
  *
@@ -8,7 +9,7 @@
 BasicBlob::BasicBlob() {
 	this->label = UNKNOWN;
 	this->format[0] = '\0';	
-	this->ObjectMask=NULL;
+	//this->ObjectMask
 }
 
 /**
@@ -39,9 +40,9 @@ BasicBlob::BasicBlob(CvBlob* blob, char* format) {
  *
  */
 BasicBlob::~BasicBlob() {
-		
-	if (this->ObjectMask!=NULL)
-		cvReleaseImage(&(this->ObjectMask));
+	//No need to release with the use of Mat	
+	//~ if (this->ObjectMask!=NULL)
+		//~ cvReleaseImage(&(this->ObjectMask));
 }
 
 /**
@@ -278,16 +279,12 @@ void BasicBlob::writeInfo(FILE* fp) {
 }
 
 //mev: Method to fill ObjectMask field with an already computed Mask
-void BasicBlob::setObjectMask(IplImage *Mask){
-		
-	ObjectMask=cvCreateImage(cvGetSize((IplImage *)Mask),IPL_DEPTH_8U, 1); 
-	ObjectMask->origin=Mask->origin;
-	cvCopy(Mask,ObjectMask);
+void BasicBlob::setObjectMask(Mat Mask){
+	ObjectMask = Mask.clone();
 }
 //mev: Method to get ObjectMask field from a Blob
-IplImage *BasicBlob::getObjectMask(){
-	IplImage *Mask = cvCloneImage(this->ObjectMask);
-	Mask->origin=ObjectMask->origin;
+Mat BasicBlob::getObjectMask(){
+	Mat Mask = this->ObjectMask.clone();
 	return Mask;
-	//cvCopy(this->ObjectMask,Mask);
+	
 }

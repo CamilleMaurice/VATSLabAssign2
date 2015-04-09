@@ -5,14 +5,14 @@
 #include "BlobList.h"
 
 //blob extraction functions (included in 'blobextrac.cpp')
-int extractBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList);
-IplImage *paintBlobImage(IplImage* frame, BlobList *pBlobList);
+int extractBlobs(Mat frame, Mat fgmask, BlobList *pBlobList);
+Mat paintBlobImage(Mat frame, BlobList *pBlobList);
 
 //blob classification functions (included in 'blobclassify.cpp')
-int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList);
-IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList);
+int classifyBlobs(Mat frame, Mat fgmask, BlobList *pBlobList);
+Mat paintBlobClasses(Mat frame, BlobList *pBlobList);
 
 //stationary blob detection functions (included in 'blobstationary.cpp')
-int detectStationaryForeground(IplImage* frame, IplImage *fgmask, IplImage* fgmask_counter, IplImage *sfgmask);
+int detectStationaryForeground(Mat frame, Mat fgmask, Mat fgmask_counter, Mat sfgmask);
 
 #endif

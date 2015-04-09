@@ -15,7 +15,7 @@
  *
  * \return Operation code (negative if not succesfull operation) 
  */
-int extractBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
+int extractBlobs(Mat frame, Mat fgmask, BlobList *pBlobList)
 {	
 	//check input conditions and return -1 if any is not satisfied
 	//...		
@@ -67,9 +67,9 @@ int extractBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
  * is created inside this function so it has to be released after its use by the 
  * function calling 'paintBlobImage'.
  */
-IplImage *paintBlobImage(IplImage* frame, BlobList *pBlobList)
+Mat paintBlobImage(Mat frame, BlobList *pBlobList)
 {
-	IplImage *blobImage=NULL;
+	Mat blobImage;
 	//check input conditions and return NULL if any is not satisfied
 	//...		
 
