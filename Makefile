@@ -4,22 +4,22 @@ INCLUDES = /usr/include/opencv-2.3.1/
 all: vats
 
 vats: main.o BlobList.o BasicBlob.o blobstationary.o blobextract.o blobclassify.o
-	gcc -o vats main.o BlobList.o BasicBlob.o blobstationary.o blobextract.o blobclassify.o $(LIBS) -lm
+	g++ -o vats main.o BlobList.o BasicBlob.o blobstationary.o blobextract.o blobclassify.o $(LIBS) -lm
 
 main.o: main.cpp
-	gcc -c main.cpp -I$(INCLUDES) -O
+	g++ -c main.cpp -I$(INCLUDES) -O
 	
 BlobList.o: BlobList.cpp
-	gcc -c BlobList.cpp -I$(INCLUDES) -O
+	g++ -c BlobList.cpp -I$(INCLUDES) -O
 	
 BasicBlob.o: BasicBlob.cpp
-	gcc -c BasicBlob.cpp -I$(INCLUDES) -O
+	g++ -c BasicBlob.cpp -I$(INCLUDES) -O
 	
 blobstationary.o: blobstationary.cpp
-	gcc -c blobstationary.cpp -I$(INCLUDES) -O
+	g++ -c blobstationary.cpp -I$(INCLUDES) -O
 	
 blobextract.o: blobextract.cpp
-	gcc -c blobextract.cpp -I$(INCLUDES) -O
+	g++ -c blobextract.cpp -I$(INCLUDES) -O
 	
 blobclassify.o: blobclassify.cpp
-	gcc -c blobclassify.cpp -I$(INCLUDES) -O
+	g++ -c blobclassify.cpp -I$(INCLUDES) -O

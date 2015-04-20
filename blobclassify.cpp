@@ -10,18 +10,25 @@
  *
  * \return Operation code (negative if not succesfull operation) 
  */
-int classifyBlobs(Mat frame, Mat fgmask, BlobList *pBlobList)
+int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 {
 	//check input conditions and return -1 if any is not satisfied
 	//...		
 
 	//required variables for classification
-	//...
+	//for aspect ratio
+	float W,H,AP;
 	
 	//classify each blob of the list
 	for(int i = 0; i < pBlobList->getBlobNum(); i++) 
 	{
-	//...
+		//get the ith blob of the list
+		BasicBlob* ith_blob = pBlobList->getBlob(i); 
+		W = ith_blob->getWidth();
+		H = ith_blob->getHeight();
+		
+		//calculate the aspect ratio
+		AP = H/W;
 	}
 	
 	//destroy all resources
@@ -44,9 +51,9 @@ int classifyBlobs(Mat frame, Mat fgmask, BlobList *pBlobList)
  * is created inside this function so it has to be released after its use by the 
  * function calling 'paintBlobImage'.
  */
-Mat paintBlobClasses(Mat frame, BlobList *pBlobList)
+IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 {
-	Mat blobImage;
+	IplImage *blobImage = NULL;
 	//check input conditions and return NULL if any is not satisfied
 	//...		
 

@@ -11,9 +11,7 @@
 #include <vector> //for having lists of elements
 #include "BasicBlob.h"//blob structure
 
-
 class BlobList {
-	
 private:
 	 std::vector<BasicBlob *> *pBlob;
 	

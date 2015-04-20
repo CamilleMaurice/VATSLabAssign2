@@ -6,7 +6,6 @@
 #define C_COST 1 //increment cost for stationary detection
 #define D_COST 5 //penalization cost for stationary detection
 
-
 /**
  *	Function to detect stationary foreground based on accumulator techniques. All the input arguments must be 
  *  initialized prior using this function.
@@ -19,7 +18,7 @@
  *
  * \return Operation code (negative if not succesfull operation) 
  */
-int detectStationaryForeground(Mat frame, Mat fgmask, Mat fgmask_counter, Mat sfgmask)
+int detectStationaryForeground(IplImage* frame, IplImage *fgmask, IplImage* fgmask_counter, IplImage *sfgmask)
 {
 	//check input validity and return -1 if any is not valid
 	//...
