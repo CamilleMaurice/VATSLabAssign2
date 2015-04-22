@@ -5,7 +5,7 @@
 #include "BlobList.h"
 
 //blob extraction functions (included in 'blobextrac.cpp')
-int extractBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList);
+int extractBlobs(IplImage * frame,IplImage * fgmask, BlobList *pBlobList);
 IplImage *paintBlobImage(IplImage* frame, BlobList *pBlobList);
 
 //blob classification functions (included in 'blobclassify.cpp')

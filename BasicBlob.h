@@ -83,6 +83,7 @@ public:
 	void setBlob(CvBlob* blob);
 	//Method to set a string describing the blob
 	void setFormat(char* format);
+	
 
 	//Prints some features of all the blobs in a file
 	virtual void write(char *filename);

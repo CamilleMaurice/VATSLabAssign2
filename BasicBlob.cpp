@@ -157,6 +157,11 @@ void BasicBlob::setlabel(CLASS newlabel)
 }
 
 /**
+ * Method to set the top-left point of the blob bounding box
+ *  \param p The new top-left point
+ */
+
+/**
  *	Method to set the x coordinate of the top-left point of the blob bounding box
  *
  * \param x The new top-left point x value
