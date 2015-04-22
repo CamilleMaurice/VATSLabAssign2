@@ -37,8 +37,8 @@ int main()
 	
 	//BG subtractor init
 	cv::BackgroundSubtractorMOG2 subtractor;
-    subtractor.set("nmixtures", 3);
-    subtractor.set("detectShadows", true);
+    subtractor.nmixtures = 3;
+    subtractor.bShadowDetection = true;
 	
 	double start=0,end=0,total=0;	
 	int i = 0;
@@ -93,7 +93,7 @@ int main()
 		 
 		 IplImage fgtmp = fgM; 
 		 IplImage* fg = &fgtmp;
-		
+		//In the fg we have 0 and 255 value sfor the pixels
 		
 		//blob extraction
 		//extractBlobs(frame, fg, blobList); //blob extraction
