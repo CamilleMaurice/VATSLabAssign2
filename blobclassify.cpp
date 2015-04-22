@@ -13,23 +13,53 @@
 int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 {
 	//check input conditions and return -1 if any is not satisfied
-	//...		
+	if ( fgmask == NULL || frame == NULL || pBlobList == NULL )
+	{
+		return -1;
+	}
 
 	//required variables for classification
 	//for aspect ratio
-	float W,H,AP;
+	float W,H,AR;
+	float mean_car,mean_person,std_car,std_person;
+	float Pp,Pc;
 	
 	//classify each blob of the list
 	for(int i = 0; i < pBlobList->getBlobNum(); i++) 
 	{
 		//get the ith blob of the list
 		BasicBlob* ith_blob = pBlobList->getBlob(i); 
-		W = ith_blob->getWidth();
 		H = ith_blob->getHeight();
+		W = ith_blob->getWidth();
 		
-		//calculate the aspect ratio
-		AP = H/W;
+		//calculate the aspect ratio feature
+		AR = W/H;
+		
+		//calculate the probability density of the normal distribution (for person)
+		mean_person = 0.3645;
+		std_person = 0.0621;
+		Pp = 1/(std_person*sqrt(2*M_PI))*exp(-(pow(AR-mean_person, 2))/(2*std_person*std_person));
+		
+		//calculate the probability density of the normal distribution (for cars)
+		mean_car = 1.8537;
+		std_car = 0.6112;
+		Pc = 1/(std_car*sqrt(2*M_PI))*exp(-(pow(AR-mean_car, 2))/(2*std_car*std_car));
+
+		//classify the blob
+		//using simple statistical classifier	
+		if (Pp > Pc)
+		{
+			ith_blob->setlabel(PERSON);
+		}else{
+			ith_blob->setlabel(CAR);
+		}
+			 					
+		
+		
+		
+				
 	}
+	
 	
 	//destroy all resources
 	//...

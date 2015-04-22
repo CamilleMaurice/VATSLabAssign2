@@ -39,8 +39,6 @@ int main()
 	cv::BackgroundSubtractorMOG2 subtractor;
     subtractor.set("nmixtures", 3);
     subtractor.set("detectShadows", true);
-    //subtractor.nmixtures = 3;
-    //subtractor.bShadowDetection = false;
 	
 	double start=0,end=0,total=0;	
 	int i = 0;
