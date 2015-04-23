@@ -47,12 +47,12 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 	//clear blob list (to fill with this function)
 	pBlobList->clear();
 	
-	/* adaptation of the mask to feed it to floodfill function:
+	/* adaptation the mask to feed it to floodfill function:
 	 * 0 meaning we should search for CC
 	 * 255 meaning we shouldn't
 	 */
-	for (int x=1;x<s_mask.width-1;x++){
-		for (int y=1;y<s_mask.height-1;y++){
+	for (int x=0;x<s_mask.width;x++){
+		for (int y=0;y<s_mask.height;y++){
 			switch(fireMask.at<uchar>(y,x)){
 				case 255:
 					fireMask.at<uchar>(y,x)=0;//if a pix is detected as FG we want to search for CC in it
@@ -65,7 +65,8 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 	}
 	for (int x=0;x<s.width;x++){
 		for (int y=0;y<s.height;y++){
-			if(fireMask.at<uchar>(y,x)==0){						
+			//we assure this pixel is not already part of another CC
+			if(fireMask.at<uchar>(y,x)==0){
 				Rect blob_square = Rect();
 				//difference allowed between pixel and neighbors
 				int loDiff=0;
@@ -73,14 +74,12 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 				//usage: connectivity|val for mask|fixed range|mask only<=>doesnt change input image
 				int flags = (8 | (1<<8) | (0<<8) | (0<<8)); 
 				//computing the flood fill given the current seed point
-				floodFill(fireMask, cvPoint(x,y), 1, &blob_square, loDiff, upDiff, flags);
+				floodFill(fireMask, cvPoint(x,y), 255, &blob_square, loDiff, upDiff, flags);
 				
 				/* We create a BasicBlob and add it to the list if
-				 * it size is above the minimum defined in the header
-				 * and it's not the full-image blob (flood fill always gives us a blob containing the whole image
+				 * its size is above the minimum defined in the header
 				 */
-				if((blob_square.width>= MIN_WIDTH && blob_square.height >= MIN_HEIGHT)
-				&& (blob_square.x != 0 || blob_square.y != 0 || blob_square.width != s_mask.width || blob_square.height != s_mask.height)){
+				if(blob_square.width>= MIN_WIDTH && blob_square.height >= MIN_HEIGHT){
 					BasicBlob * new_blob = new BasicBlob();
 					new_blob->setX((blob_square.x));
 					new_blob->setY((blob_square.y));
@@ -92,7 +91,6 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 			}
 		}
 	}
-	//destroy all resources
 	return EXIT_SUCCESS;
 }
 
