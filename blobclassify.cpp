@@ -53,9 +53,11 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 		//using simple statistical classifier	
 		if (Pp > Pc)
 		{
-			ith_blob->setlabel((Class)1);
+			ith_blob->setlabel((CLASS)1);
+			//ith_blob->setlabel(1);
 		}else{
-			ith_blob->setlabel((Class)2);
+			ith_blob->setlabel((CLASS)2);
+			//ith_blob->setlabel(2);
 		}			
 	}
 	

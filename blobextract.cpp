@@ -21,7 +21,10 @@ using namespace cv;
  */
 int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 {	
-	//if() ius eñpty or stuff
+	if(frameIpl == NULL || fgmaskIpl == NULL){
+		std::cerr<<"frame or FG mask not defined"<<std::endl<<"exiting..."<<std::endl;
+		return EXIT_FAILURE;
+	}
 	//check input conditions and return -1 if any is not satisfied
 	
 	//required variables for connected component analysis 

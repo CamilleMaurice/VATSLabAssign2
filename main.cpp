@@ -23,19 +23,18 @@ using namespace std;
 
 int main(int argc, char*argv[])
 {	if(argc !=2){
-		cerr<<"Wrong number of argument: where is the name of the video file?"<<endl;
+		std::cerr<<"Wrong number of argument: where is the name of the video file?"<<std::endl;
 		return EXIT_FAILURE;		
 	}
 	
 	// Required variables for the program
 	CvCapture* capture=NULL;
 	CvVideoWriter *videowriter;
-	IplImage *frame=NULL, *fg=NULL, *bg=NULL; //images for background subtraction	
+	Mat fgM, bgM;
+	IplImage *frame=NULL; //images for background subtraction	
+	Mat outblobsM, outlabelsM;
 	IplImage *outblobs=NULL, *outlabels=NULL; //output images for blob extraction and blob labels
 	BlobList *blobList = new BlobList();
-	
-	Mat fgM, bgM;
-	Mat outblobsM, outlabelsM;
 	
 	//BG subtractor initialization
 	cv::BackgroundSubtractorMOG2 subtractor;
@@ -51,7 +50,7 @@ int main(int argc, char*argv[])
 	//module initialization
 
 	//read video file & first frame
-	if(!(capture = cvCaptureFromFile(INPUT_VIDEO)))
+	if(!(capture = cvCaptureFromFile(*argv)))
 	{
 		printf("Problem opening video file\n");
 		return -1;
