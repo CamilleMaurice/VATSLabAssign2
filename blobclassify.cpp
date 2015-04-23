@@ -102,7 +102,6 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 	
 			//cvRectangle( frame, cvPoint(10,10), cvPoint(frame->width-10, frame->height-10), white, 2, 8, 0 );
 
-
 	//paint each blob of the list
 	for(int i = 0; i < pBlobList->getBlobNum(); i++) 	
 	{	
@@ -119,7 +118,7 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 		//pt2 = cvPoint(W-x,H-y);
 		//In white for all class first then specify the color
 		CvScalar color = {255};
-		cvRectangle( frame, cvPoint(x,y), cvPoint(W-x, H-x), color, 2, 8, 0 );
+		cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), color, 2, 8, 0 );
 	}
 
 	//destroy all resources (if required)
