@@ -35,7 +35,7 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
               cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
               cv::Point(erosion_size, erosion_size) );
     Mat element2 = getStructuringElement(cv::MORPH_ELLIPSE,
-              cv::Size(6 * erosion_size + 1, 6 * erosion_size + 1),
+              cv::Size(10 * erosion_size + 1, 10 * erosion_size + 1),
               cv::Point(erosion_size, erosion_size) );
               
 	erode(fgmask,fgmask,element1);
@@ -61,24 +61,12 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 			//~ if(fireMask.at<uchar>(y,x)==255)
 				//~ printf("%u - ",fireMask.at<uchar>(y,x));
 			switch(fireMask.at<uchar>(y,x)){
-				case 0:
-					fireMask.at<uchar>(y,x)=255;//if detected as BG we dont want to search for CC in it
+				case 255:
+					fireMask.at<uchar>(y,x)=0;//if detected as BG we dont want to search for CC in it
 					break;
 				default:
-					fireMask.at<uchar>(y,x)=0;//same for shadows
+					fireMask.at<uchar>(y,x)=255;//same for shadows
 					break;
-					//~ 
-				//~ case 0:
-					//~ fireMask.at<uchar>(y,x)=255;//if detected as BG we dont want to search for CC in it
-					//~ break;
-				//~ case 127:
-					//~ fireMask.at<uchar>(y,x)=255;//same for shadows
-					//~ break;
-				//~ case 255:
-					//~ fireMask.at<uchar>(y,x)=0;//if detected as FG we want to search for CC
-					//~ break;
-				//~ default:
-					//~ printf("strange value in mask: %u at pix(%d,%d)\n",fireMask.at<uchar>(y,x),x,y);
 			};
 			//~ if(fireMask.at<uchar>(y,x)!=0)
 				//~ printf("%u \n",fireMask.at<uchar>(y,x));
@@ -87,7 +75,6 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 	imshow("fireMask",fireMask);
 	waitKey(0);
 
-	
 	for (int x=0;x<s.width;x++){
 		for (int y=0;y<s.height;y++){
 			if(fireMask.at<uchar>(y,x)==0){						
@@ -100,15 +87,13 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 				int flags = (8 | (1<<8) | (0<<8) | (0<<8)); 
 				//with this function we only search blobs in the pixels segmented as foreground
 				int flood = floodFill(fireMask, cvPoint(x,y), 1, &blob_square, loDiff, upDiff, flags);
-				//if(flood!=1)
-				//	std::cerr<<"flood fill returns "<<flood;
-				//~ std::cout<<blob_square->width<<" "<<blob_square->height<<std::endl;
-				//check size of blob using MIN_WIDTH & HEIGHT (valid = true)
-				if(blob_square.width>= MIN_WIDTH && blob_square.height >= MIN_HEIGHT){
+					//check size of blob using MIN_WIDTH & HEIGHT (valid = true)
+				if((blob_square.width>= MIN_WIDTH && blob_square.height >= MIN_HEIGHT)
+				&& (blob_square.x != 0 || blob_square.y != 0 || blob_square.width != s_mask.width || blob_square.height != s_mask.height)){
 					//include blob in 'pBlobList' if it is valid
 					//creation of basic blob
 					BasicBlob * new_blob = new BasicBlob();
-					printf("---%d %d",blob_square.x,blob_square.y);
+					printf("---%d %d %d %d",blob_square.x,blob_square.y,blob_square.width,blob_square.height);
 					new_blob->setX((blob_square.x));
 					new_blob->setY((blob_square.y));
 					new_blob->setWidth((blob_square.width));

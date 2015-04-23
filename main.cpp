@@ -97,16 +97,16 @@ int main()
 		//~ std::cout<<"calling extract blobs..."<<std::endl;
 		
 		//blob extraction
-		cvShowImage("mainWin", frame );
+		//cvShowImage("mainWin", frame );
 		extractBlobs(frame, fg, blobList); 
 				
 		//outblobs = paintBlobImage(frame, blobList);//paint blobs
 		//~ std::cout<<"blobs extracted!"<<std::endl;
 		
 		//blob classification
-		//classifyBlobs(frame, fg, blobList); 
-		//outlabels = paintBlobClasses(frame, blobList);
-			
+		classifyBlobs(frame, fg, blobList); 
+		outlabels = paintBlobClasses(frame, blobList);
+			cvShowImage("mainWin",outlabels);
 		
 		//stationary blob detection
 		//detectStationaryForeground(frame, fg, fgcounter, sfg);
