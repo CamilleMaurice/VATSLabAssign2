@@ -103,7 +103,7 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 	{	
 		//get info about the ithblob
 		BasicBlob* ith_blob = pBlobList->getBlob(i); 
-		//CAR == ith_blob->getlabel();
+		
 		H = ith_blob->getHeight();
 		W = ith_blob->getWidth();
 		x = ith_blob->getX();
