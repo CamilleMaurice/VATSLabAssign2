@@ -53,9 +53,9 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 		//using simple statistical classifier	
 		if (Pp > Pc)
 		{
-			ith_blob->setlabel(PERSON);
+			ith_blob->setlabel((Class)1);
 		}else{
-			ith_blob->setlabel(CAR);
+			ith_blob->setlabel((Class)2);
 		}			
 	}
 	
