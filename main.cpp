@@ -38,7 +38,7 @@ int main()
 	//BG subtractor init
 	cv::BackgroundSubtractorMOG2 subtractor;//=cv::BackgroundSubtractorMOG2(50,16,true);
     subtractor.nmixtures = 3;
-    subtractor.bShadowDetection = true;
+   // subtractor.bShadowDetection = true;
 	
 	double start=0,end=0,total=0;	
 	int i = 0;
@@ -66,8 +66,8 @@ int main()
 	//create output windows	
 	namedWindow("frameM");
 	namedWindow("Foreground");
-	namedWindow("blobs");
-
+	namedWindow("fireMask");
+	cvNamedWindow("mainWin", CV_WINDOW_AUTOSIZE); 
 	//create output writer
 	videowriter = cvCreateVideoWriter("result.mpg", CV_FOURCC('P','I','M','1'), 25, cvGetSize(frame), 1 );	
 	cvInitFont( &font, CV_FONT_HERSHEY_DUPLEX, 0.8, 0.8, 0, 2, 8 );
@@ -82,51 +82,40 @@ int main()
 		i++;
 		start =((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
 
-		//background subtraction (final foreground mask must be placed in 'fg' variable)
-		//...
-			
+		//background subtraction (final foreground mask must be placed in 'fg' variable)		
 		subtractor.operator()(frameM,fgM);
         subtractor.getBackgroundImage(bgM);
 		
-		imshow("frameM", frameM);
-	    imshow("Foreground", fgM);
-	    // waitKey(0);
-		//conversion to Mat
+		imshow("frame", frameM);
+		imshow("Foreground", fgM);
+	     //waitKey(0);
+		 //conversion to Mat
 		 //IplImage fgtmp = fgM; 
 		 //IplImage* fg = &fgtmp;
 		 IplImage* fg = new IplImage(fgM);
 		//In the fgMask we have 0 and 255 values for the pixels
 		//~ std::cout<<"calling extract blobs..."<<std::endl;
+		
 		//blob extraction
-		extractBlobs(frame, fg, blobList); //blob extraction
+		cvShowImage("mainWin", frame );
+		extractBlobs(frame, fg, blobList); 
+				
 		//outblobs = paintBlobImage(frame, blobList);//paint blobs
-		std::cout<<"blobs extracted!"<<std::endl;
+		//~ std::cout<<"blobs extracted!"<<std::endl;
+		
 		//blob classification
-		classifyBlobs(frame, fg, blobList); //classify blobs
-		outlabels = paintBlobClasses(frame, blobList);//paint classification blobs
-		IplImage * blobson = paintBlobClasses(frame,blobList);
-		Mat b(frame);
-		imshow("blobs",b);
-		waitKey(0);
-		//~ 
+		//classifyBlobs(frame, fg, blobList); 
+		//outlabels = paintBlobClasses(frame, blobList);
+			
+		
 		//stationary blob detection
 		//detectStationaryForeground(frame, fg, fgcounter, sfg);
 
-		// Drawing and text functions for frame
-		
-		cvRectangle( frame, cvPoint(10,10), cvPoint(frame->width-10, frame->height-10), white, 2, 8, 0 );
-		
-		sprintf(buf,"VATS");
-		
-		//cvPutText(frame, buf, cvPoint(20,frame->height-30), &font, white );
-		
 		//show results visually
 		//...
 	
 		end = ((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
-		
 		total=total + end-start;
-
 		printf("Processing frame %d --> %.3g ms\n", i,end-start);
 			
 		cvWaitKey( 2 );
