@@ -38,13 +38,13 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 		//calculate the probability density of the normal distribution (for person)
 		mean_person = 0.3645;
 		std_person = 0.0621;
-		//Pp = 1/(std_person*sqrt(2*M_PI))*exp(-(pow(AR-mean_person, 2))/(2*std_person*std_person));
-		Pp = normalPDF(AR, mean_person, std_person);
+		Pp = 1/(std_person*sqrt(2*M_PI))*exp(-(pow(AR-mean_person, 2))/(2*std_person*std_person));
+		//Pp = normalPDF(AR, mean_person, std_person);
 		//calculate the probability density of the normal distribution (for cars)
 		mean_car = 1.8537;
 		std_car = 0.6112;
-		//Pc = 1/(std_car*sqrt(2*M_PI))*exp(-(pow(AR-mean_car, 2))/(2*std_car*std_car));
-		Pc = normalPDF(AR, mean_car, std_car)
+		Pc = 1/(std_car*sqrt(2*M_PI))*exp(-(pow(AR-mean_car, 2))/(2*std_car*std_car));
+		//Pc = normalPDF(AR, mean_car, std_car)
 		
 		//for bags
 		//Pb = ...
@@ -69,11 +69,11 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 	return 1;
 }
 
-float normalPDF(float x, float mean, float std){
-	float result;
-	result = 1/(std*sqrt(2*M_PI))*exp(-(pow(x-mean, 2))/(2*std));
-	return result;	
-}
+//float normalPDF(float x, float mean, float std){
+//	float result;
+//	result = 1/(std*sqrt(2*M_PI))*exp(-(pow(x-mean, 2))/(2*std));
+//	return result;	
+//}
 
 
 /**
