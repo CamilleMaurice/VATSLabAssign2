@@ -112,19 +112,19 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 		W = ith_blob->getWidth();
 		x = ith_blob->getX();
 		y = ith_blob->getY();
-		
+		printf("%d %d",x,y);
 		//get points to describe the rectangle
 		//pt1 = cvPoint(x,y);
 		//pt2 = cvPoint(W-x,H-y);
 		//In white for all class first then specify the color
 		//CvScalar colorcars = {255};
 		if(ith_blob->getlabel() == CAR){
-			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 100, 0, 0 ), 2, 8, 0 );
+			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+y), CV_RGB( 100, 0, 0 ), 2, 8, 0 );
 		}
 		if(ith_blob->getlabel() == PERSON){
-			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 0, 0, 100 ), 2, 8, 0 );
+			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+y), CV_RGB( 0, 0, 100 ), 2, 8, 0 );
 		}
-		cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 0, 255, 0 ), 2, 8, 0 );
+		cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+y), CV_RGB( 0, 255, 0 ), 2, 8, 0 );
 	}
 
 	//destroy all resources (if required)

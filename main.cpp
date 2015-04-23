@@ -38,7 +38,7 @@ int main()
 	//BG subtractor init
 	cv::BackgroundSubtractorMOG2 subtractor;//=cv::BackgroundSubtractorMOG2(50,16,true);
     subtractor.nmixtures = 3;
-   // subtractor.bShadowDetection = true;
+    subtractor.bShadowDetection = true;
 	
 	double start=0,end=0,total=0;	
 	int i = 0;

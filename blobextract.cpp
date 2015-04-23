@@ -1,5 +1,5 @@
 #include "blobfuns.h"
-#include "BasicBlob.h"
+//#include "BasicBlob.h"
 #include "opencv2/imgproc/imgproc_c.h"
 #include <opencv2/opencv.hpp>
 //#include <iostream>
@@ -29,6 +29,18 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 	Mat fgmask(fgmaskIpl);
 	Size s=frame.size();
 	//initialisation of mask
+	//C++: void erode(InputArray src, OutputArray dst, InputArray kernel, Point anchor=Point(-1,-1), int iterations=1, int borderType=BORDER_CONSTANT, const Scalar& borderValue=morphologyDefaultBorderValue() 
+	int erosion_size = 1;	
+	Mat element1 = getStructuringElement(cv::MORPH_ELLIPSE,
+              cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+              cv::Point(erosion_size, erosion_size) );
+    Mat element2 = getStructuringElement(cv::MORPH_ELLIPSE,
+              cv::Size(6 * erosion_size + 1, 6 * erosion_size + 1),
+              cv::Point(erosion_size, erosion_size) );
+              
+	erode(fgmask,fgmask,element1);
+	dilate(fgmask,fgmask,element2);
+
 	Mat fireMask(s.width+2,s.height+2,CV_8UC1);
 	copyMakeBorder(fgmask,fireMask,1,1,1,1,BORDER_CONSTANT,0);
 	Size s_mask=fireMask.size();
@@ -50,18 +62,24 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 				//~ printf("%u - ",fireMask.at<uchar>(y,x));
 			switch(fireMask.at<uchar>(y,x)){
 				case 0:
-					fireMask.at<uchar>(y,x)=1;
-					break;
-				case 127:
-					fireMask.at<uchar>(y,x)=1;
-					break;
-				case 255:
-					fireMask.at<uchar>(y,x)=0;
+					fireMask.at<uchar>(y,x)=255;//if detected as BG we dont want to search for CC in it
 					break;
 				default:
-					printf("strange value in mask: %u at pix(%d,%d)\n",fireMask.at<uchar>(y,x),x,y);
+					fireMask.at<uchar>(y,x)=0;//same for shadows
+					break;
+					//~ 
+				//~ case 0:
+					//~ fireMask.at<uchar>(y,x)=255;//if detected as BG we dont want to search for CC in it
+					//~ break;
+				//~ case 127:
+					//~ fireMask.at<uchar>(y,x)=255;//same for shadows
+					//~ break;
+				//~ case 255:
+					//~ fireMask.at<uchar>(y,x)=0;//if detected as FG we want to search for CC
+					//~ break;
+				//~ default:
+					//~ printf("strange value in mask: %u at pix(%d,%d)\n",fireMask.at<uchar>(y,x),x,y);
 			};
-					break;		
 			//~ if(fireMask.at<uchar>(y,x)!=0)
 				//~ printf("%u \n",fireMask.at<uchar>(y,x));
 		}
@@ -74,26 +92,31 @@ int extractBlobs(IplImage *frameIpl, IplImage *fgmaskIpl, BlobList *pBlobList)
 		for (int y=0;y<s.height;y++){
 			if(fireMask.at<uchar>(y,x)==0){						
 				//std::cout<<"seed Point: "<<x<<" "<<y<<" - ";
-				Rect *blob_square = new Rect();
+				Rect blob_square = Rect();
 				//difference allowed between pixel and neighbors
-				int loDiff=10;
-				int upDiff=10;
+				int loDiff=0;
+				int upDiff=0;
 				//usage: connectivity|val for mask|fixed range|mask only<=>doesnt change input image
-				int flags = (8 | (1<<8) | (0<<8) | (1<<8)); 
+				int flags = (8 | (1<<8) | (0<<8) | (0<<8)); 
 				//with this function we only search blobs in the pixels segmented as foreground
-				int flood = floodFill(frame, fireMask, cvPoint(x,y), 0, blob_square, loDiff, upDiff, flags);
+				int flood = floodFill(fireMask, cvPoint(x,y), 1, &blob_square, loDiff, upDiff, flags);
 				//if(flood!=1)
 				//	std::cerr<<"flood fill returns "<<flood;
 				//~ std::cout<<blob_square->width<<" "<<blob_square->height<<std::endl;
 				//check size of blob using MIN_WIDTH & HEIGHT (valid = true)
-				if(blob_square->width>= MIN_WIDTH && blob_square->height >= MIN_HEIGHT){
+				if(blob_square.width>= MIN_WIDTH && blob_square.height >= MIN_HEIGHT){
 					//include blob in 'pBlobList' if it is valid
 					//creation of basic blob
 					BasicBlob * new_blob = new BasicBlob();
-					new_blob->setX((blob_square->x));
-					new_blob->setY((blob_square->y));
+					printf("---%d %d",blob_square.x,blob_square.y);
+					new_blob->setX((blob_square.x));
+					new_blob->setY((blob_square.y));
+					new_blob->setWidth((blob_square.width));
+					new_blob->setHeight((blob_square.height));
+					
 					
 					pBlobList->addBlob(new_blob);
+					printf("Blob: (%f,%f) a (%f,%f) \n",blob_square.x,blob_square.y,blob_square.x+blob_square.width,blob_square.y+blob_square.height);
 				}
 			//...
 			}
@@ -145,10 +168,10 @@ IplImage *paintBlobImage(IplImage* frame, BlobList *pBlobList)
 	for(int b = 0; b < pBlobList->getBlobNum(); b++) 	
 	{
 		//~ BasicBloc *blob =  pBlobList->getBlob(b);
-		//~ int x = blob.getX();
-		//~ int y = blob.getY();
-		//~ int w = blob.getWidth();
-		//~ int h = blob.getHeight();
+		//~ float x = blob.getX();
+		//~ float y = blob.getY();
+		//~ float w = blob.getWidth();
+		//~ float h = blob.getHeight();
 		//~ CvScalar color = {0,255,0};
 		//~ cvRectangle(frame, cvPoint(x,y), cvPoint(x+w, y+h), color, 2, 8, 0 );
 	}
