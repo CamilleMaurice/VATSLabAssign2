@@ -57,10 +57,7 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
 		}else{
 			ith_blob->setlabel(CAR);
 		}			
-		
-						
 	}
-	
 	
 	//destroy all resources
 	//...
@@ -90,7 +87,8 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
  */
 IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 {
-	IplImage *blobImage = frame;
+	IplImage* blobImage;
+	blobImage = cvCloneImage(frame);
 	if ( frame == NULL || pBlobList == NULL )
 	{
 		return NULL;
@@ -100,8 +98,6 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 	float H,W,x,y;
 	class classified;
 	
-			//cvRectangle( frame, cvPoint(10,10), cvPoint(frame->width-10, frame->height-10), white, 2, 8, 0 );
-
 	//paint each blob of the list
 	for(int i = 0; i < pBlobList->getBlobNum(); i++) 	
 	{	
@@ -113,18 +109,14 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 		x = ith_blob->getX();
 		y = ith_blob->getY();
 		
-		//get points to describe the rectangle
-		//pt1 = cvPoint(x,y);
-		//pt2 = cvPoint(W-x,H-y);
-		//In white for all class first then specify the color
-		//CvScalar colorcars = {255};
 		if(ith_blob->getlabel() == CAR){
-			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 100, 0, 0 ), 2, 8, 0 );
+			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+x), CV_RGB( 100, 0, 0 ), 2, 8, 0 );
 		}
 		if(ith_blob->getlabel() == PERSON){
-			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 0, 0, 100 ), 2, 8, 0 );
+			cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+x), CV_RGB( 0, 0, 100 ), 2, 8, 0 );
 		}
-		cvRectangle( blobImage, cvPoint(x,y), cvPoint(W-x, H-x), CV_RGB( 0, 255, 0 ), 2, 8, 0 );
+		
+		cvRectangle( blobImage, cvPoint(x,y), cvPoint(W+x, H+x), CV_RGB( 0, 255, 0 ), 2, 8, 0 );
 	}
 
 	//destroy all resources (if required)
