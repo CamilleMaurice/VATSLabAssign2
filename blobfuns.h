@@ -11,7 +11,4 @@ int extractBlobs(IplImage * frame,IplImage * fgmask, BlobList *pBlobList);
 int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList);
 IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList);
 
-//stationary blob detection functions (included in 'blobstationary.cpp')
-int detectStationaryForeground(IplImage* frame, IplImage *fgmask, IplImage* fgmask_counter, IplImage *sfgmask);
-
 #endif

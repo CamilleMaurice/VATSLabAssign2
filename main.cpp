@@ -21,33 +21,34 @@
 using namespace cv;
 using namespace std;
 
-int main()
-{	
+int main(int argc, char*argv[])
+{	if(argc !=2){
+		cerr<<"Wrong number of argument: where is the name of the video file?"<<endl;
+		return EXIT_FAILURE;		
+	}
+	
 	// Required variables for the program
 	CvCapture* capture=NULL;
 	CvVideoWriter *videowriter;
 	IplImage *frame=NULL, *fg=NULL, *bg=NULL; //images for background subtraction	
-	IplImage *fgcounter=NULL, *sfg=NULL; //images for stationary foreground analysis (counter and static fg mask)
 	IplImage *outblobs=NULL, *outlabels=NULL; //output images for blob extraction and blob labels
+	BlobList *blobList = new BlobList();
 	
 	Mat fgM, bgM;
-	Mat fgcounterM,sfgM;
 	Mat outblobsM, outlabelsM;
 	
 	//BG subtractor initialization
 	cv::BackgroundSubtractorMOG2 subtractor;
-    //this works on the university environment
+    //this works on the university environment:
     //subtractor.nmixtures = 3;
-	//this is for subsequent versions of OpenCV
+	//this is for subsequent versions of OpenCV:
 	subtractor.set("nmixtures",3);
 	
 	double start=0,end=0,total=0;	
 	int i = 0;
-	CvScalar white = {255};
 	CvFont font;
-	char buf[100];
 	
-	//module initialization (background subtraction, bloblist,...)
+	//module initialization
 
 	//read video file & first frame
 	if(!(capture = cvCaptureFromFile(INPUT_VIDEO)))
@@ -58,7 +59,6 @@ int main()
 	
 	frame = cvQueryFrame( capture );
 		
-	BlobList *blobList = new BlobList();
 		
 	//create output windows	
 	namedWindow("frameM");
@@ -77,27 +77,23 @@ int main()
 	{
 		i++;
 		start =((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
-
 		//background subtraction (final foreground mask must be placed in 'fg' variable)		
 		subtractor.operator()(frameM,fgM);
         subtractor.getBackgroundImage(bgM);
 		
-		imshow("frame", frameM);
-		imshow("Foreground", fgM);
 		IplImage* fg = new IplImage(fgM);
-		//In the fgMask we have 0 and 255 values for the pixels
+		
+		//blob extraction
 		extractBlobs(frame, fg, blobList); 
 		//blob classification
 		classifyBlobs(frame, fg, blobList); 
 		outlabels = paintBlobClasses(frame, blobList);
-			cvShowImage("mainWin",outlabels);
 		
-		//stationary blob detection
-		//detectStationaryForeground(frame, fg, fgcounter, sfg);
-
-		//show results visually
-		//...
-	
+		//showing results
+		imshow("frame", frameM);
+		imshow("Foreground", fgM);
+		cvShowImage("mainWin",outlabels);
+		
 		end = ((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
 		total=total + end-start;
 		printf("Processing frame %d --> %.3g ms\n", i,end-start);
@@ -106,16 +102,15 @@ int main()
 		
 
 		//write frame result to video
-		//cvWriteFrame( videowriter, outblobs );		
+		cvWriteFrame( videowriter, outlabels );		
 		
 		//release memory of temporal images
-		//cvReleaseImage( &outblobs );
-		//cvReleaseImage( &outlabels );
+		cvReleaseImage( &outblobs );
+		cvReleaseImage( &outlabels );
 
 	} while(frame=cvQueryFrame(capture));
 	//destroy all resources
-	//delete blobList;
+	delete blobList;
 
-//why was it a 1 here??
 	return EXIT_SUCCESS;
 }
