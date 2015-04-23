@@ -25,6 +25,7 @@ int main()
 {	
 	// Required variables for the program
 	CvCapture* capture=NULL;
+	CvVideoWriter *videowriter;
 	IplImage *frame=NULL, *fg=NULL, *bg=NULL; //images for background subtraction	
 	IplImage *fgcounter=NULL, *sfg=NULL; //images for stationary foreground analysis (counter and static fg mask)
 	IplImage *outblobs=NULL, *outlabels=NULL; //output images for blob extraction and blob labels
@@ -33,20 +34,21 @@ int main()
 	Mat fgcounterM,sfgM;
 	Mat outblobsM, outlabelsM;
 	
-	CvVideoWriter *videowriter;
-	
-	//BG subtractor init
-	cv::BackgroundSubtractorMOG2 subtractor;//=cv::BackgroundSubtractorMOG2(50,16,true);
-    subtractor.nmixtures = 3;
-   // subtractor.bShadowDetection = true;
+	//BG subtractor initialization
+	cv::BackgroundSubtractorMOG2 subtractor;
+    //this works on the university environment
+    //subtractor.nmixtures = 3;
+	//this is for subsequent versions of OpenCV
+	subtractor.set("nmixtures",3);
 	
 	double start=0,end=0,total=0;	
 	int i = 0;
 	CvScalar white = {255};
-
 	CvFont font;
 	char buf[100];
 	
+	//module initialization (background subtraction, bloblist,...)
+
 	//read video file & first frame
 	if(!(capture = cvCaptureFromFile(INPUT_VIDEO)))
 	{
@@ -55,12 +57,7 @@ int main()
 	}
 	
 	frame = cvQueryFrame( capture );
-	
-	//image initialization (counters, auxiliar images,...)
-	//...
 		
-	//module initialization (background subtraction, bloblist,...)
-	//...
 	BlobList *blobList = new BlobList();
 		
 	//create output windows	
@@ -78,7 +75,6 @@ int main()
 			
 	do
 	{
-		//~ std::cout<<"main iteration n:"<<i<<std::endl;
 		i++;
 		start =((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
 
@@ -88,21 +84,9 @@ int main()
 		
 		imshow("frame", frameM);
 		imshow("Foreground", fgM);
-	     //waitKey(0);
-		 //conversion to Mat
-		 //IplImage fgtmp = fgM; 
-		 //IplImage* fg = &fgtmp;
-		 IplImage* fg = new IplImage(fgM);
+		IplImage* fg = new IplImage(fgM);
 		//In the fgMask we have 0 and 255 values for the pixels
-		//~ std::cout<<"calling extract blobs..."<<std::endl;
-		
-		//blob extraction
-		//cvShowImage("mainWin", frame );
 		extractBlobs(frame, fg, blobList); 
-				
-		//outblobs = paintBlobImage(frame, blobList);//paint blobs
-		//~ std::cout<<"blobs extracted!"<<std::endl;
-		
 		//blob classification
 		classifyBlobs(frame, fg, blobList); 
 		outlabels = paintBlobClasses(frame, blobList);
