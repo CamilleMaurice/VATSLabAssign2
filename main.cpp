@@ -61,7 +61,6 @@ int main(int argc, char*argv[])
 		
 	//create output windows	
 	namedWindow("frameM");
-	namedWindow("Foreground");
 	namedWindow("fireMask");
 	cvNamedWindow("mainWin", CV_WINDOW_AUTOSIZE); 
 	//create output writer
@@ -90,7 +89,6 @@ int main(int argc, char*argv[])
 		
 		//showing results
 		imshow("frame", frameM);
-		imshow("Foreground", fgM);
 		cvShowImage("mainWin",outlabels);
 		
 		end = ((double)cvGetTickCount()/(cvGetTickFrequency()*1000.) );
@@ -98,7 +96,6 @@ int main(int argc, char*argv[])
 		printf("Processing frame %d --> %.3g ms\n", i,end-start);
 			
 		cvWaitKey( 2 );
-		
 
 		//write frame result to video
 		cvWriteFrame( videowriter, outlabels );		
