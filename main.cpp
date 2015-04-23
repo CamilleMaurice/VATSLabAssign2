@@ -67,7 +67,7 @@ int main()
 	namedWindow("frameM");
 	namedWindow("Foreground");
 	namedWindow("fireMask");
-
+	namedWindow("blobs");
 	//create output writer
 	videowriter = cvCreateVideoWriter("result.mpg", CV_FOURCC('P','I','M','1'), 25, cvGetSize(frame), 1 );	
 	cvInitFont( &font, CV_FONT_HERSHEY_DUPLEX, 0.8, 0.8, 0, 2, 8 );
@@ -88,7 +88,7 @@ int main()
 		subtractor.operator()(frameM,fgM);
         subtractor.getBackgroundImage(bgM);
 		
-		imshow("frameM", frameM);
+	
 	    imshow("Foreground", fgM);
 	    // waitKey(0);
 		//conversion to Mat
@@ -100,18 +100,20 @@ int main()
 		//blob extraction
 		extractBlobs(frame, fg, blobList); //blob extraction
 		//outblobs = paintBlobImage(frame, blobList);//paint blobs
+
 		//~ std::cout<<"blobs extracted!"<<std::endl;
 		//blob classification
 		//classifyBlobs(frame, fg, blobList); //classify blobs
-		//outlabels = paintBlobClasses(frame, blobList);//paint classification blobs
-		
+		outlabels = paintBlobClasses(frame, blobList);//paint classification blobs
+		Mat outlabelsM = outlabels;
+		imshow("blobs",outlabelsM);
 		//stationary blob detection
 		//detectStationaryForeground(frame, fg, fgcounter, sfg);
 
 		// Drawing and text functions for frame
 		
-		cvRectangle( frame, cvPoint(10,10), cvPoint(frame->width-10, frame->height-10), white, 2, 8, 0 );
-		
+		//cvRectangle( frame, cvPoint(10,10), cvPoint(frame->width-10, frame->height-10), white, 2, 8, 0 );
+		imshow("frameM", frameM);
 		sprintf(buf,"VATS");
 		
 		//cvPutText(frame, buf, cvPoint(20,frame->height-30), &font, white );

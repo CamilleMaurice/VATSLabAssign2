@@ -90,7 +90,7 @@ int classifyBlobs(IplImage* frame, IplImage *fgmask, BlobList *pBlobList)
  */
 IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 {
-	IplImage *blobImage = NULL;
+	IplImage *blobImage = frame;
 	if ( frame == NULL || pBlobList == NULL )
 	{
 		return NULL;
@@ -128,8 +128,7 @@ IplImage *paintBlobClasses(IplImage* frame, BlobList *pBlobList)
 	}
 
 	//destroy all resources (if required)
-	//...
-	
+
 	//return the image to show
 	return blobImage;
 }
